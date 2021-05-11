@@ -1,6 +1,7 @@
 import { Construct } from 'constructs';
-import { App, TerraformStack, Testing  } from 'cdktf';
+import { App, TerraformStack, Testing, TerraformAsset } from 'cdktf';
 import * as NullProvider from './.gen/providers/null';
+import * as path from 'path';
 const token = process.env.TERRAFORM_CLOUD_TOKEN;
 const name = process.env.TERRAFORM_CLOUD_WORKSPACE_NAME;
 const organization = process.env.TERRAFORM_CLOUD_ORGANIZATION;
@@ -15,6 +16,10 @@ export class HelloTerra extends TerraformStack {
       'local-exec': {
         command: `echo "hello deploy"`
       }
+    }, {
+      'remote-exec': {
+        command: `cat ./asset-a/a.txt`
+      }
     }]);
 
     this.addOverride('terraform.backend', {
@@ -26,6 +31,10 @@ export class HelloTerra extends TerraformStack {
         token
       }
     });
+
+    new TerraformAsset(this, "asset-a", {
+      path: path.resolve(__dirname, "fixtures/a.txt")
+    })
   }
 }
 
