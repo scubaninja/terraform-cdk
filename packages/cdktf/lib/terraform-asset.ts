@@ -3,7 +3,7 @@ import { TerraformElement } from "./terraform-element";
 import * as fs from "fs";
 import * as path from "path";
 import { Manifest } from "./manifest";
-import { copySync, archiveSync, hashPath } from "./private/fs";
+import { copySync, hashPath } from "./private/fs";
 
 export interface TerraformAssetConfig {
   readonly path: string;
@@ -14,10 +14,8 @@ export interface TerraformAssetConfig {
 export enum AssetType {
   FILE,
   DIRECTORY,
-  ARCHIVE,
 }
 
-const ARCHIVE_NAME = "archive.zip";
 const ASSETS_DIRECTORY = "assets";
 
 export class TerraformAsset extends TerraformElement {
@@ -54,14 +52,7 @@ export class TerraformAsset extends TerraformElement {
   }
 
   public get path(): string {
-    let filename = "";
-    switch (this.type) {
-      case AssetType.ARCHIVE:
-        filename = ARCHIVE_NAME;
-        break;
-      case AssetType.FILE:
-        filename = path.basename(this.sourcePath);
-    }
+    const filename = this.type === AssetType.FILE ? path.basename(this.sourcePath) : "";
 
     return path.join(ASSETS_DIRECTORY, this.friendlyUniqueId, filename);
   }
@@ -90,10 +81,6 @@ export class TerraformAsset extends TerraformElement {
 
       case AssetType.DIRECTORY:
         copySync(this.sourcePath, targetPath);
-        break;
-
-      case AssetType.ARCHIVE:
-        archiveSync(this.sourcePath, targetPath);
         break;
       default:
         throw new Error(`Asset type ${this.type} is not implemented`);

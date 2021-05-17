@@ -13,11 +13,6 @@ export class HelloTerra extends TerraformStack {
     new TerraformAsset(this, "fixtures", {
       path: path.resolve(__dirname, "fixtures"),
     });
-
-    new TerraformAsset(this, "zipped-fixtures", {
-      path: path.resolve(__dirname, "fixtures"),
-      type: AssetType.ARCHIVE,
-    });
   }
 }
 

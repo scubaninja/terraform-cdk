@@ -29,9 +29,15 @@ describe("python full integration test assets", () => {
         "utf-8"
       )
     ).toMatchSnapshot();
-    const stat = fs.statSync(
-      path.resolve(driver.stackDirectory("python-assets"), "assets/fixtures/archive.zip")
-    );
-    expect(stat.isFile()).toBe(true);
+
+    expect(
+      fs.readFileSync(
+        path.resolve(
+          driver.stackDirectory("python-assets"),
+          "assets/fixtures/a.txt"
+        ),
+        "utf-8"
+      )
+    ).toMatchSnapshot();
   })
 })
